@@ -1,7 +1,9 @@
 package com.example.Spring_LAB_5.service;
 
+import com.example.Spring_LAB_5.entity.Category;
 import com.example.Spring_LAB_5.entity.Task;
 import com.example.Spring_LAB_5.entity.User;
+import com.example.Spring_LAB_5.repository.CategoryRepository;
 import com.example.Spring_LAB_5.repository.TaskRepository;
 import com.example.Spring_LAB_5.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,9 @@ public class TaskService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private CategoryRepository categoryRepository;
+
     public List<Task> getTasksForUser(String username) {
         return taskRepository.findByUser_Username(username);
     }
@@ -32,9 +37,11 @@ public class TaskService {
         task.setUser(user);
         taskRepository.save(task);
     }
+
     public void deleteTaskById(Long id) {
         taskRepository.deleteById(id);
     }
+
     public Task getTaskById(Long id) {
         return taskRepository.findById(id).orElseThrow(() -> new RuntimeException("Task not found"));
     }
@@ -46,7 +53,14 @@ public class TaskService {
         task.setDueDate(updatedTask.getDueDate());
         task.setStatus(updatedTask.getStatus());
         task.setPriority(updatedTask.getPriority());
+        task.setCategory(updatedTask.getCategory());
         taskRepository.save(task);
     }
 
+    public void assignCategoryToTask(Task task, Long categoryId) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+        task.setCategory(category);
+        taskRepository.save(task);
+    }
 }

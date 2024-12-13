@@ -11,7 +11,6 @@ public class Category {
 
     private String name;
 
-
     public Long getId() {
         return id;
     }
